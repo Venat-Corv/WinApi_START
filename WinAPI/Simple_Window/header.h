@@ -1,5 +1,6 @@
 #pragma once
 #include<Windows.h>
+#include<CommCtrl.h>
 #include"resource.h"
 CONST CHAR SZ_CLASS_NAME[] = "MyWindowClass";
 
