@@ -139,9 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DlgProc.cpp" />
+    <ClCompile Include="Functions.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="WndProc.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="header.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
