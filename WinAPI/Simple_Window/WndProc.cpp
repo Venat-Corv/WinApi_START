@@ -24,6 +24,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL
 		);
 		SetFocus(hEdit);
+
+		if (szFileName[0])
+		{
+			
+			LoadTextFileToEdit(hEdit, szFileName);
+		}
 		////////////////Toolbar///////////////
 		HWND hTool = CreateWindowEx
 		(
@@ -38,7 +44,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		tbab.nID = IDB_STD_SMALL_COLOR;
 		SendMessage(hTool, TB_ADDBITMAP, 0, (LPARAM)&tbab);
 
-		tbb[0].iBitmap = STD_FILENEW;
+		/*tbb[0].iBitmap = STD_FILENEW;
 		tbb[0].fsState = TBSTATE_ENABLED;
 		tbb[0].fsStyle = TBSTYLE_BUTTON;
 		tbb[0].idCommand = ID_FILE_NEW;
@@ -51,7 +57,15 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		tbb[2].iBitmap = STD_FILESAVE;
 		tbb[2].fsState = TBSTATE_ENABLED;
 		tbb[2].fsStyle = TBSTYLE_BUTTON;
-		tbb[2].idCommand = ID_FILE_SAVE;
+		tbb[2].idCommand = ID_FILE_SAVE;*/
+
+		for (int i = 0; i < sizeof(tbb) / sizeof(TBBUTTON); i++)
+		{
+			tbb[i].iBitmap = STD_FILENEW + i;
+			tbb[i].fsState = TBSTATE_ENABLED;
+			tbb[i].fsStyle = TBSTYLE_BUTTON;
+			tbb[i].idCommand = ID_FILE_NEW + i;
+		}
 
 		SendMessage(hTool, TB_ADDBUTTONS, sizeof(tbb) / sizeof(TBBUTTON), (LPARAM)&tbb);
 		//////////////////////////////////////
@@ -64,11 +78,32 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			0, STATUSCLASSNAME, NULL, WS_CHILD | WS_VISIBLE | SBARS_SIZEGRIP, 0, 0, 0, 0,
 			hwnd, (HMENU)IDC_STATUS, GetModuleHandle(NULL), NULL
 		);
-		int statwidth[] = { 100, -1 };
+
+		int statwidth[] = { 300, -1 };
 		SendMessage(hStatus, SB_SETPARTS, sizeof(statwidth) / sizeof(int), (LPARAM)statwidth);
-		SendMessage(hStatus, SB_SETTEXT, 0, (LPARAM)"Hello");
+		SendMessage(hStatus, SB_SETTEXT, 0, (LPARAM)(szFileName[0]?szFileName:"No file"));
 
 		/////////////////////////////////////
+
+		RegisterHotKey(hwnd, HOTKEY_NEW, MOD_CONTROL, 'N');
+		RegisterHotKey(hwnd, HOTKEY_OPEN, MOD_CONTROL, 'O');
+		RegisterHotKey(hwnd, HOTKEY_SAVE, MOD_CONTROL, 'S');
+		RegisterHotKey(hwnd, HOTKEY_SAVEAS, MOD_CONTROL+MOD_ALT, 'S');
+		RegisterHotKey(hwnd, HOTKEY_ABOUT, 0, VK_F1);
+
+		HDC hdc = GetDC(NULL);
+		long lfHeight = -MulDiv(16, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+		ReleaseDC(NULL, hdc);
+
+		HFONT hf = CreateFont(
+			lfHeight,
+			0, 0, 0, 0,
+			TRUE, 0, 0,
+			0, 0, 0, 0, 0,
+			"Times New Roman"
+		);
+		SendMessage(hEdit, WM_SETFONT, (WPARAM)hf, 0);
+
 	}
 	break;
 	case WM_SIZE:
@@ -96,25 +131,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SetWindowPos(hEdit, NULL, 0, iToolbarHeight, rcClient.right, iEditHeight, SWP_NOZORDER);
 	}
 	break;
+	case WM_DROPFILES:
+	{
+		HDROP hDrop = (HDROP)wParam;
+		DragQueryFile(hDrop, 0, szFileName, MAX_PATH);
+		LoadTextFileToEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
+		DragFinish(hDrop);
+	}
+		break;
 	case WM_COMMAND:
 	{
 		switch (LOWORD(wParam))
 		{
 		case ID_FILE_OPEN:
 		{
-			if (FileChanged(GetDlgItem(hwnd, IDC_EDIT)))
-			{
-				switch (MessageBox(hwnd, "Сохранить изменения в файле?", "Не так быстро...", MB_YESNOCANCEL | MB_ICONQUESTION))
-				{
-				case IDYES: SendMessage(hwnd, WM_COMMAND, ID_FILE_SAVE, 0);
-				case IDNO: DoFileOpen(hwnd);
-				case IDCANCEL: break;
-				}
-			}
-			else
-			{
-				DoFileOpen(hwnd);
-			}
+			WathChanged(hwnd, DoFileOpen);
 		}
 		break;
 		case ID_FILE_SAVEAS:
@@ -141,27 +172,36 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 		case ID_HELP_ABOUT:
 		{
-			MessageBox(hwnd, "Я тебе не помогу", "Info", MB_OK);
 			DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG1), hwnd, DlgProc, 0);
 		}
 		break;
 		}
 	}
 	break;
+	case WM_HOTKEY:
+	{
+		switch (wParam)
+		{
+		case HOTKEY_NEW:
+			SendMessage(hwnd, WM_COMMAND, ID_FILE_NEW, 0);
+			break;
+		case HOTKEY_OPEN:
+			SendMessage(hwnd, WM_COMMAND, ID_FILE_OPEN, 0);
+			break;
+		case HOTKEY_SAVE:
+			SendMessage(hwnd, WM_COMMAND, ID_FILE_SAVE, 0);
+			break;
+		case HOTKEY_SAVEAS:
+			SendMessage(hwnd, WM_COMMAND, ID_FILE_SAVEAS, 0);
+			break;
+		case HOTKEY_ABOUT:
+			SendMessage(hwnd, WM_COMMAND, ID_HELP_ABOUT, 0);
+			break;
+		}
+	}
+		break;
 	case WM_CLOSE:
-		if (FileChanged(GetDlgItem(hwnd, IDC_EDIT)))
-		{
-			switch (MessageBox(hwnd, "Сохранить изменения в файле?", "Не так быстро...", MB_YESNOCANCEL | MB_ICONQUESTION))
-			{
-			case IDYES: SendMessage(hwnd, WM_COMMAND, ID_FILE_SAVE, 0);
-			case IDNO: DestroyWindow(hwnd);
-			case IDCANCEL: break;
-			}
-		}
-		else
-		{
-			DestroyWindow(hwnd);
-		}
+		WathChanged(hwnd, DestroyWindow);
 		break;
 	case WM_DESTROY:
 		MessageBox(hwnd, "Спаcибо за то что выбрали наш редактор", "Info", MB_OK);

@@ -26,6 +26,7 @@ BOOL LoadTextFileToEdit(HWND hEdit, LPCTSTR lpszFileName)
 			CloseHandle(hFile);
 		}
 	}
+	SetFileNameToStatusBar(hEdit);
 	return bSuccess;
 }
 
@@ -38,26 +39,27 @@ BOOL SaveFileFromEdit(HWND hEdit, LPCTSTR lpszFileName)
 		DWORD dwTextLength = GetWindowTextLength(hEdit);
 		if (dwTextLength)
 		{
-			LPSTR lpszCurrentText = (LPSTR)GlobalAlloc(GPTR, dwTextLength + 1);
-			if (lpszCurrentText)
+			lpszFileText = (LPSTR)GlobalAlloc(GPTR, dwTextLength + 1);
+			if (lpszFileText)
 			{
-				if (GetWindowText(hEdit, lpszCurrentText, dwTextLength + 1))
+				if (GetWindowText(hEdit, lpszFileText, dwTextLength + 1))
 				{
 					DWORD dwWrite;
-					if (WriteFile(hFile, lpszCurrentText, dwTextLength, &dwWrite, NULL))
+					if (WriteFile(hFile, lpszFileText, dwTextLength, &dwWrite, NULL))
 					{
 						bSuccess = TRUE;
 					}
-					GlobalFree(lpszCurrentText);
+					GlobalFree(lpszFileText);
 				}
 			}
 			CloseHandle(hFile);
 		}
+		SetFileNameToStatusBar(hEdit);
 		return bSuccess;
 	}
 }
 
-VOID DoFileOpen(HWND hwnd)
+BOOL _stdcall DoFileOpen(HWND hwnd)
 {
 	OPENFILENAME ofn;
 	//CHAR szFileName[MAX_PATH]{};
@@ -74,7 +76,9 @@ VOID DoFileOpen(HWND hwnd)
 	if (GetOpenFileName(&ofn))
 	{
 		LoadTextFileToEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
+		return TRUE;
 	}
+	return FALSE;
 }
 
 VOID DoFileSaveAs(HWND hwnd)
@@ -112,4 +116,31 @@ BOOL FileChanged(HWND hEdit)
 		GlobalFree(lpszCurrentText);
 	}
 	return bFileWasChanged;
+}
+
+VOID SetFileNameToStatusBar(HWND hEdit)
+{
+	LPSTR szNameOnly = strrchr(szFileName, '\\') + 1;
+	CHAR szTitle[MAX_PATH] = "SimpleWindow";
+	strcat_s(szTitle, MAX_PATH, " - ");
+	strcat_s(szTitle, MAX_PATH, szNameOnly);
+	SendMessage(GetDlgItem(GetParent(hEdit), IDC_STATUS), SB_SETTEXT, 0, (LPARAM)szFileName);
+	SetWindowText(GetParent(hEdit), szTitle);
+}
+
+VOID WathChanged(HWND hwnd, BOOL(_stdcall *Action)(HWND))
+{
+	if (FileChanged(GetDlgItem(hwnd, IDC_EDIT)))
+	{
+		switch (MessageBox(hwnd, "Сохранить изменения в файле?", "Не так быстро...", MB_YESNOCANCEL | MB_ICONQUESTION))
+		{
+		case IDYES: SendMessage(hwnd, WM_COMMAND, ID_FILE_SAVE, 0);
+		case IDNO: Action(hwnd);
+		case IDCANCEL: break;
+		}
+	}
+	else
+	{
+		Action(hwnd);
+	}
 }

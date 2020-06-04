@@ -6,6 +6,16 @@ LPSTR lpszFileText = NULL;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
 {
+
+	if (lpCmdLine[0])
+	{
+		//strcpy_s(szFileName, MAX_PATH, lpCmdLine);
+		for (int i = 0, j = 0; lpCmdLine[i]; i++)
+		{
+			if (lpCmdLine[i] != '\"')szFileName[j++] = lpCmdLine[i];
+		}
+	}
+
 	WNDCLASSEX wc;
 	wc.cbSize = sizeof(WNDCLASSEX);
 	wc.style = 0;
@@ -27,13 +37,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, in
 
 	HWND hwnd = CreateWindowEx
 	(
-		WS_EX_CLIENTEDGE,
+		WS_EX_CLIENTEDGE | WS_EX_ACCEPTFILES,
 		SZ_CLASS_NAME,
 		"This is my first Window",
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT, 700, 900,
 		NULL, NULL, hInstance, NULL
 	);
+
 
 	if (hwnd == NULL)
 	{
