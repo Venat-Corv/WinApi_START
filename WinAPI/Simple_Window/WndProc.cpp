@@ -98,7 +98,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		HFONT hf = CreateFont(
 			lfHeight,
 			0, 0, 0, 0,
-			TRUE, 0, 0,
+			0, 0, 0,
 			0, 0, 0, 0, 0,
 			"Times New Roman"
 		);
@@ -143,6 +143,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		switch (LOWORD(wParam))
 		{
+		case ID_FILE_NEW:
+		{
+			WathChanged(hwnd, DoFileNew); 
+		}
+		break;
 		case ID_FILE_OPEN:
 		{
 			WathChanged(hwnd, DoFileOpen);
@@ -151,6 +156,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case ID_FILE_SAVEAS:
 		{
 			DoFileSaveAs(hwnd);
+		}
+		break;
+		case ID_FORMAT_FONT:
+		{
+			DoSelectFont(hwnd);
 		}
 		break;
 		case ID_FILE_SAVE:
@@ -172,7 +182,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 		case ID_HELP_ABOUT:
 		{
-			DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG1), hwnd, DlgProc, 0);
+			//DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG1), hwnd, DlgProc, 0);
 		}
 		break;
 		}

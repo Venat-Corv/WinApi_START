@@ -2,6 +2,8 @@
 
 CHAR szFileName[MAX_PATH] = {};
 LPSTR lpszFileText = NULL;
+HFONT g_hFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
+COLORREF g_rgbText = RGB(0, 0, 0);
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)

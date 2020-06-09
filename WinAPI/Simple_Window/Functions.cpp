@@ -102,6 +102,20 @@ VOID DoFileSaveAs(HWND hwnd)
 	}
 }
 
+BOOL _stdcall DoFileNew(HWND hwnd)
+{
+	HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
+	SetWindowText(hEdit, "");
+	ZeroMemory(szFileName, sizeof(szFileName));
+	if (lpszFileText)
+	{
+		GlobalFree(lpszFileText);
+		lpszFileText = NULL;
+	}
+	SetFileNameToStatusBar(GetDlgItem(hwnd, IDC_EDIT));
+	return TRUE;
+}
+
 BOOL FileChanged(HWND hEdit)
 {
 	BOOL bFileWasChanged = FALSE;
@@ -120,15 +134,18 @@ BOOL FileChanged(HWND hEdit)
 
 VOID SetFileNameToStatusBar(HWND hEdit)
 {
-	LPSTR szNameOnly = strrchr(szFileName, '\\') + 1;
 	CHAR szTitle[MAX_PATH] = "SimpleWindow";
-	strcat_s(szTitle, MAX_PATH, " - ");
-	strcat_s(szTitle, MAX_PATH, szNameOnly);
+	if (szFileName[0])
+	{
+		LPSTR szNameOnly = strrchr(szFileName, '\\') + 1;
+		strcat_s(szTitle, MAX_PATH, " - ");
+		strcat_s(szTitle, MAX_PATH, szNameOnly);
+	}
 	SendMessage(GetDlgItem(GetParent(hEdit), IDC_STATUS), SB_SETTEXT, 0, (LPARAM)szFileName);
 	SetWindowText(GetParent(hEdit), szTitle);
 }
 
-VOID WathChanged(HWND hwnd, BOOL(_stdcall *Action)(HWND))
+VOID WathChanged(HWND hwnd, BOOL(_stdcall* Action)(HWND))
 {
 	if (FileChanged(GetDlgItem(hwnd, IDC_EDIT)))
 	{
@@ -143,4 +160,32 @@ VOID WathChanged(HWND hwnd, BOOL(_stdcall *Action)(HWND))
 	{
 		Action(hwnd);
 	}
+}
+
+VOID DoSelectFont(HWND hwnd)
+{
+	CHOOSEFONT cf = { sizeof(CHOOSEFONT) };
+	LOGFONT lf;
+
+	GetObject(g_hFont, sizeof(LOGFONT), &lf);
+
+	cf.Flags = CF_EFFECTS | CF_INITTOLOGFONTSTRUCT | CF_SCREENFONTS;
+	cf.hwndOwner = hwnd;
+	cf.lpLogFont = &lf;
+	cf.rgbColors = g_rgbText;
+
+	if (ChooseFont(&cf))
+	{
+		HFONT hf = CreateFontIndirect(&lf);
+		if (hf)
+		{
+			g_hFont = hf;
+		}
+		else
+		{
+			MessageBox(hwnd, "Font create failed!", "Error", MB_OK | MB_ICONERROR);
+		}
+		g_rgbText = cf.rgbColors;
+	}
+	SendMessage(GetDlgItem(hwnd, IDC_EDIT), WM_SETFONT, (WPARAM)g_hFont, MAKELPARAM(TRUE,0));
 }
