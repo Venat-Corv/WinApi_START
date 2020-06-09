@@ -180,12 +180,13 @@ VOID DoSelectFont(HWND hwnd)
 		if (hf)
 		{
 			g_hFont = hf;
+			g_rgbText = cf.rgbColors;
 		}
 		else
 		{
 			MessageBox(hwnd, "Font create failed!", "Error", MB_OK | MB_ICONERROR);
 		}
-		g_rgbText = cf.rgbColors;
 	}
 	SendMessage(GetDlgItem(hwnd, IDC_EDIT), WM_SETFONT, (WPARAM)g_hFont, MAKELPARAM(TRUE,0));
+	SendMessage(GetDlgItem(hwnd, IDC_EDIT), WM_CTLCOLOREDIT, g_rgbText, IDC_EDIT);
 }

@@ -19,6 +19,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 BOOL _stdcall DoFileOpen(HWND hwnd);
 VOID DoFileSaveAs(HWND hwnd);
 VOID DoSelectFont(HWND hwnd);
+VOID DoSelectColor(WPARAM wParam);
 
 BOOL FileChanged(HWND hEdit);
 BOOL _stdcall DoFileNew(HWND hwnd);

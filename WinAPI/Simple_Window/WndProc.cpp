@@ -131,6 +131,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SetWindowPos(hEdit, NULL, 0, iToolbarHeight, rcClient.right, iEditHeight, SWP_NOZORDER);
 	}
 	break;
+	case WM_CTLCOLOREDIT:
+	{
+		SetTextColor((HDC)wParam, g_rgbText);
+		return (LRESULT)0;
+	}
+	break;
 	case WM_DROPFILES:
 	{
 		HDROP hDrop = (HDROP)wParam;
