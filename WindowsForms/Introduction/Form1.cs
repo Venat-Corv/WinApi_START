@@ -13,10 +13,12 @@ namespace Introduction
     public partial class Form1 : Form
     {
         Font font_default;
+        bool isVisible;
         public Form1()
         {
             InitializeComponent();
             font_default = cb_showdate.Font;
+            isVisible = false;
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -27,28 +29,44 @@ namespace Introduction
         private void main_timer_Tick(object sender, EventArgs e)
         {
             this.lb_time.Text = DateTime.Now.ToLongTimeString();
-            this.lb_date.Text = DateTime.Now.ToLongDateString();
-        }
-
-        private void cb_showdate_CheckedChanged(object sender, EventArgs e)
-        {
-            this.lb_date.Visible = this.cb_showdate.Checked;
+            this.lb_date.Text = DateTime.Now.ToShortDateString();
         }
 
         private void Form1_MouseHover(object sender, EventArgs e)
         {
         }
 
-        private void cb_showdate_MouseHover(object sender, EventArgs e)
+        private void cb_showdate_Click_1(object sender, EventArgs e)
         {
-            this.cb_showdate.ForeColor = Color.Red;
-            this.cb_showdate.Font = new Font(font_default, FontStyle.Bold);
+            this.lb_date.Visible = isVisible ? false : true;
+            isVisible = this.lb_date.Visible;
+            this.close.Visible = isVisible;
+            this.cb_showdate.Text = isVisible ? "-" : "+";
         }
 
-        private void cb_showdate_MouseLeave(object sender, EventArgs e)
+        private void close_Click(object sender, EventArgs e)
         {
-            this.cb_showdate.ForeColor = Color.Black;
-            this.cb_showdate.Font = new Font(font_default, FontStyle.Regular);
+            Dispose(true);
         }
+        private void alwaysOnTopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            alwaysOnTopToolStripMenuItem.Checked = this.TopMost = TopMost? false : true;
+        }
+        private void showToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Show();
+        }
+
+
+        private void hideToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+        }
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
     }
 }
