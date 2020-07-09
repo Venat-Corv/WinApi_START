@@ -1,0 +1,139 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Ukrainian (Ukraine) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_UKR)
+LANGUAGE LANG_UKRAINIAN, SUBLANG_DEFAULT
+#pragma code_page(1251)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG1 DIALOGEX 0, 0, 185, 136
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "4",IDCBTN4,7,59,25,14
+    PUSHBUTTON      "7",IDCBTN7,7,36,23,14
+    EDITTEXT        IDC_EDIT1,7,14,161,15,ES_RIGHT | ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "1",IDCBTN1,7,83,25,14
+    DEFPUSHBUTTON   "8",IDCBTN8,41,36,25,14
+    DEFPUSHBUTTON   "5",IDCBTN5,42,60,25,14
+    DEFPUSHBUTTON   "2",IDCBTN2,42,83,25,14
+    DEFPUSHBUTTON   "9",IDCBTN9,77,36,25,14
+    DEFPUSHBUTTON   "6",IDCBTN6,77,59,25,14
+    DEFPUSHBUTTON   "3",IDCBTN3,78,83,25,14
+    DEFPUSHBUTTON   "0",IDCBTN0,7,104,59,14
+    DEFPUSHBUTTON   ".",IDCBTNDOUB,77,104,25,14
+    DEFPUSHBUTTON   "+",IDCBTNPLUS,113,36,25,14
+    DEFPUSHBUTTON   "-",IDCBTNMINUS,114,59,25,14
+    DEFPUSHBUTTON   "*",IDCBTNMULTI,113,83,25,14
+    DEFPUSHBUTTON   "/",IDCBTNDIVIS,114,104,25,14
+    PUSHBUTTON      "C",IDCBTNCLR,148,36,20,37
+    PUSHBUTTON      "=",IDCBTNRES,148,81,20,37
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_DIALOG1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 178
+        VERTGUIDE, 30
+        VERTGUIDE, 42
+        VERTGUIDE, 54
+        VERTGUIDE, 66
+        VERTGUIDE, 79
+        VERTGUIDE, 102
+        VERTGUIDE, 114
+        VERTGUIDE, 126
+        VERTGUIDE, 138
+        VERTGUIDE, 168
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 129
+        HORZGUIDE, 36
+        HORZGUIDE, 50
+        HORZGUIDE, 60
+        HORZGUIDE, 73
+        HORZGUIDE, 83
+        HORZGUIDE, 104
+        HORZGUIDE, 118
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_DIALOG1 AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // Ukrainian (Ukraine) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
